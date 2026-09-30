@@ -20,36 +20,6 @@
       <div id="today-date" class="date-badge"></div>
     </header>
 
-    <!-- Section: Local File Storage (.txt) -->
-    <section class="card">
-      <div class="card-header">
-        <h2 class="card-title">📁 Local File Storage (.txt)</h2>
-        <div>
-          <span class="file-pill">habits.txt</span>
-          <span class="file-pill">progress.txt</span>
-        </div>
-      </div>
-      <p class="card-subtitle">Connect your local folder to auto-sync, or export/import your text files directly.</p>
-
-      <div class="sync-panel">
-        <div class="sync-status-row">
-          <div class="sync-status-badge">
-            <span id="sync-dot" class="sync-status-dot"></span>
-            <span id="sync-status-text">Not connected to local folder</span>
-          </div>
-          <div class="sync-actions">
-            <button type="button" id="btn-connect-dir" class="btn btn-primary btn-sm">📂 Connect Local Folder</button>
-            <button type="button" id="btn-reload-files" class="btn btn-secondary btn-sm" style="display: none;">🔄 Reload from Disk</button>
-            <button type="button" id="btn-export-txt" class="btn btn-secondary btn-sm" title="Download habits.txt and progress.txt">⬇ Export .txt</button>
-            <button type="button" id="btn-import-habits" class="btn btn-secondary btn-sm" title="Upload habits.txt">⬆ Import habits.txt</button>
-            <button type="button" id="btn-import-progress" class="btn btn-secondary btn-sm" title="Upload progress.txt">⬆ Import progress.txt</button>
-            <input type="file" id="file-input-habits" accept=".txt" style="display: none;">
-            <input type="file" id="file-input-progress" accept=".txt" style="display: none;">
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- Section 1: Add New Habit -->
     <section class="card">
       <h2 class="card-title">1. Add a Habit</h2>
