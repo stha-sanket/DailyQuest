@@ -1,0 +1,6 @@
+# DailyQuest Daily Progress Logs
+# Format: YYYY-MM-DD | Habit ID | 1 (completed) or 0 (not completed)
+# You can manually review or edit date completions here.
+2026-09-30 | h1 | 1
+2026-09-30 | h2 | 0
+2026-09-30 | h3 | 1
