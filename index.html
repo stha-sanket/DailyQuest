@@ -77,9 +77,9 @@
     // --- State Initialization ---
     // Default initial habits if none exist
     let habits = JSON.parse(localStorage.getItem(STORAGE_KEY_HABITS)) || [
-      { id: 'h1', name: 'Drink 2L Water', routine: 'Morning' },
-      { id: 'h2', name: 'Read 15 Mins', routine: 'Evening' },
-      { id: 'h3', name: 'Workout / Walk', routine: 'Afternoon' }
+      { id: 'h1', name: 'Drink 2L Water' },
+      { id: 'h2', name: 'Read 15 Mins' },
+      { id: 'h3', name: 'Workout / Walk' }
     ];
 
     let logs = JSON.parse(localStorage.getItem(STORAGE_KEY_LOGS)) || {};
@@ -129,45 +129,31 @@
       container.innerHTML = '';
 
       if (habits.length === 0) {
-        container.innerHTML = '<p>No habits added yet. Use the form above to add your first routine item!</p>';
+        container.innerHTML = '<p>No habits added yet. Use the form above to add your first habit!</p>';
         updateProgress();
         return;
       }
 
-      // Group habits by routine
-      const grouped = {};
-      habits.forEach(h => {
-        const routine = h.routine || 'Anytime';
-        if (!grouped[routine]) grouped[routine] = [];
-        grouped[routine].push(h);
+      const ul = document.createElement('ul');
+      habits.forEach(habit => {
+        const li = document.createElement('li');
+        const isDone = !!(logs[todayStr] && logs[todayStr][habit.id]);
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `check-${habit.id}`;
+        checkbox.checked = isDone;
+        checkbox.addEventListener('change', () => toggleHabit(todayStr, habit.id, checkbox.checked));
+
+        const label = document.createElement('label');
+        label.htmlFor = `check-${habit.id}`;
+        label.textContent = ` ${habit.name}`;
+
+        li.appendChild(checkbox);
+        li.appendChild(label);
+        ul.appendChild(li);
       });
-
-      for (const [routineName, routineHabits] of Object.entries(grouped)) {
-        const groupTitle = document.createElement('h3');
-        groupTitle.textContent = routineName;
-        container.appendChild(groupTitle);
-
-        const ul = document.createElement('ul');
-        routineHabits.forEach(habit => {
-          const li = document.createElement('li');
-          const isDone = !!(logs[todayStr] && logs[todayStr][habit.id]);
-
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.id = `check-${habit.id}`;
-          checkbox.checked = isDone;
-          checkbox.addEventListener('change', () => toggleHabit(todayStr, habit.id, checkbox.checked));
-
-          const label = document.createElement('label');
-          label.htmlFor = `check-${habit.id}`;
-          label.textContent = ` ${habit.name}`;
-
-          li.appendChild(checkbox);
-          li.appendChild(label);
-          ul.appendChild(li);
-        });
-        container.appendChild(ul);
-      }
+      container.appendChild(ul);
 
       updateProgress();
     }
@@ -187,7 +173,7 @@
       theadRow.innerHTML = '<th>Date</th>';
       habits.forEach(h => {
         const th = document.createElement('th');
-        th.textContent = `${h.name} (${h.routine})`;
+        th.textContent = h.name;
         theadRow.appendChild(th);
       });
       const progressTh = document.createElement('th');
@@ -256,15 +242,6 @@
           nameInput.type = 'text';
           nameInput.value = habit.name;
 
-          const routineSelect = document.createElement('select');
-          ['Morning', 'Afternoon', 'Evening', 'Anytime'].forEach(opt => {
-            const option = document.createElement('option');
-            option.value = opt;
-            option.textContent = opt;
-            if (habit.routine === opt) option.selected = true;
-            routineSelect.appendChild(option);
-          });
-
           const saveBtn = document.createElement('button');
           saveBtn.textContent = 'Save';
           saveBtn.type = 'button';
@@ -274,7 +251,7 @@
               alert('Habit name cannot be empty');
               return;
             }
-            updateHabit(habit.id, newName, routineSelect.value);
+            updateHabit(habit.id, newName);
           });
 
           const cancelBtn = document.createElement('button');
@@ -288,14 +265,12 @@
           li.appendChild(document.createTextNode('Edit: '));
           li.appendChild(nameInput);
           li.appendChild(document.createTextNode(' '));
-          li.appendChild(routineSelect);
-          li.appendChild(document.createTextNode(' '));
           li.appendChild(saveBtn);
           li.appendChild(document.createTextNode(' '));
           li.appendChild(cancelBtn);
         } else {
           const textSpan = document.createElement('span');
-          textSpan.textContent = `${habit.name} [${habit.routine}] `;
+          textSpan.textContent = `${habit.name} `;
           li.appendChild(textSpan);
 
           const editBtn = document.createElement('button');
@@ -330,22 +305,20 @@
       renderTable();
     }
 
-    function addHabit(name, routine) {
+    function addHabit(name) {
       const newHabit = {
         id: 'h_' + Date.now(),
-        name: name.trim(),
-        routine: routine
+        name: name.trim()
       };
       habits.push(newHabit);
       saveData();
       renderAll();
     }
 
-    function updateHabit(habitId, newName, newRoutine) {
+    function updateHabit(habitId, newName) {
       const habit = habits.find(h => h.id === habitId);
       if (habit) {
         habit.name = newName;
-        habit.routine = newRoutine;
         saveData();
       }
       editingHabitId = null;
@@ -353,7 +326,7 @@
     }
 
     function deleteHabit(habitId) {
-      if (!confirm('Are you sure you want to delete this routine item?')) return;
+      if (!confirm('Are you sure you want to delete this habit?')) return;
       habits = habits.filter(h => h.id !== habitId);
       if (editingHabitId === habitId) {
         editingHabitId = null;
@@ -379,9 +352,8 @@
     document.getElementById('add-habit-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const input = document.getElementById('habit-name');
-      const routineSelect = document.getElementById('habit-routine');
       if (input.value.trim()) {
-        addHabit(input.value, routineSelect.value);
+        addHabit(input.value);
         input.value = '';
       }
     });
