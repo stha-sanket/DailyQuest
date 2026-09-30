@@ -2,72 +2,74 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DailyQuest - Simple Habit Tracker</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header>
-    <p id="today-date"></p>
-  </header>
+  <main class="app-container">
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">✓</div>
+        <div>
+          <h1 class="brand-title">DailyQuest</h1>
+          <p class="brand-subtitle">Simple, minimal daily habit tracker</p>
+        </div>
+      </div>
+      <div id="today-date" class="date-badge"></div>
+    </header>
 
-  <hr>
+    <!-- Section 1: Add New Habit -->
+    <section class="card">
+      <h2 class="card-title">1. Add a Habit</h2>
+      <form id="add-habit-form">
+        <label for="habit-name">Habit Name:</label>
+        <input type="text" id="habit-name" placeholder="e.g., Drink 2L Water, Read 10 pages" required>
+        <button type="submit">Add Habit</button>
+      </form>
+    </section>
 
-  <!-- Section 1: Add New Habit -->
-  <section>
-    <h2>1. Add a Habit</h2>
-    <form id="add-habit-form">
-      <label for="habit-name">Habit Name:</label>
-      <input type="text" id="habit-name" placeholder="e.g., Drink 2L Water, Read 10 pages" required>
+    <!-- Section 2: Today's Routine Checklist -->
+    <section class="card">
+      <h2 class="card-title">2. Today's Checklist</h2>
+      <div>
+        <strong>Today's Completion: </strong>
+        <span id="progress-text">0 / 0</span>
+        <progress id="progress-bar" value="0" max="100"></progress>
+      </div>
 
-      <button type="submit">Add Habit</button>
-    </form>
-  </section>
+      <div id="today-checklist-container">
+        <!-- Generated checklist items will be inserted here -->
+      </div>
+    </section>
 
-  <hr>
+    <!-- Section 3: Notion-Style Weekly / Daily Grid Table -->
+    <section class="card">
+      <h2 class="card-title">3. Habit Database (Notion-Style Table View)</h2>
+      <p class="card-subtitle">Columns represent your habits; rows represent dates.</p>
+      <table border="1" id="habits-table">
+        <thead>
+          <tr id="table-header-row">
+            <th>Date</th>
+            <!-- Habit headers will be inserted here dynamically -->
+            <th>Daily Progress</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <!-- Date rows with checkboxes will be inserted here dynamically -->
+        </tbody>
+      </table>
+    </section>
 
-  <!-- Section 2: Today's Routine Checklist -->
-  <section>
-    <h2>2. Today's Checklist</h2>
-    <div>
-      <strong>Today's Completion: </strong>
-      <span id="progress-text">0 / 0</span>
-      <progress id="progress-bar" value="0" max="100"></progress>
-    </div>
-
-    <div id="today-checklist-container">
-      <!-- Generated checklist items will be inserted here -->
-    </div>
-  </section>
-
-  <hr>
-
-  <!-- Section 3: Notion-Style Weekly / Daily Grid Table -->
-  <section>
-    <h2>3. Habit Database (Notion-Style Table View)</h2>
-    <p>Columns represent your habits; rows represent dates.</p>
-    <table border="1" id="habits-table">
-      <thead>
-        <tr id="table-header-row">
-          <th>Date</th>
-          <!-- Habit headers will be inserted here dynamically -->
-          <th>Daily Progress</th>
-        </tr>
-      </thead>
-      <tbody id="table-body">
-        <!-- Date rows with checkboxes will be inserted here dynamically -->
-      </tbody>
-    </table>
-  </section>
-
-  <hr>
-
-  <!-- Section 4: Manage Habits List -->
-  <section>
-    <h2>4. Manage Habits</h2>
-    <ul id="manage-habits-list">
-      <!-- List of existing habits with delete buttons -->
-    </ul>
-  </section>
+    <!-- Section 4: Manage Habits List -->
+    <section class="card">
+      <h2 class="card-title">4. Manage Habits</h2>
+      <ul id="manage-habits-list">
+        <!-- List of existing habits with delete buttons -->
+      </ul>
+    </section>
+  </main>
 
   <script>
     // --- Data Storage Keys ---
