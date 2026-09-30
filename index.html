@@ -249,22 +249,31 @@
       list.innerHTML = '';
 
       if (habits.length === 0) {
-        list.innerHTML = '<li>No habits available to manage.</li>';
+        list.innerHTML = '<div class="empty-state">No habits available to manage.</div>';
         return;
       }
 
       habits.forEach(habit => {
         const li = document.createElement('li');
+        li.className = 'manage-item';
 
         if (editingHabitId === habit.id) {
           // Inline edit form
+          const formDiv = document.createElement('div');
+          formDiv.className = 'inline-edit-form';
+
           const nameInput = document.createElement('input');
           nameInput.type = 'text';
+          nameInput.className = 'form-input form-input-sm';
           nameInput.value = habit.name;
+
+          const actionsDiv = document.createElement('div');
+          actionsDiv.className = 'manage-item-actions';
 
           const saveBtn = document.createElement('button');
           saveBtn.textContent = 'Save';
           saveBtn.type = 'button';
+          saveBtn.className = 'btn btn-primary btn-sm';
           saveBtn.addEventListener('click', () => {
             const newName = nameInput.value.trim();
             if (!newName) {
@@ -277,25 +286,29 @@
           const cancelBtn = document.createElement('button');
           cancelBtn.textContent = 'Cancel';
           cancelBtn.type = 'button';
+          cancelBtn.className = 'btn btn-secondary btn-sm';
           cancelBtn.addEventListener('click', () => {
             editingHabitId = null;
             renderManageHabits();
           });
 
-          li.appendChild(document.createTextNode('Edit: '));
-          li.appendChild(nameInput);
-          li.appendChild(document.createTextNode(' '));
-          li.appendChild(saveBtn);
-          li.appendChild(document.createTextNode(' '));
-          li.appendChild(cancelBtn);
+          actionsDiv.appendChild(saveBtn);
+          actionsDiv.appendChild(cancelBtn);
+          formDiv.appendChild(nameInput);
+          formDiv.appendChild(actionsDiv);
+          li.appendChild(formDiv);
         } else {
           const textSpan = document.createElement('span');
-          textSpan.textContent = `${habit.name} `;
-          li.appendChild(textSpan);
+          textSpan.className = 'manage-item-name';
+          textSpan.textContent = habit.name;
+
+          const actionsDiv = document.createElement('div');
+          actionsDiv.className = 'manage-item-actions';
 
           const editBtn = document.createElement('button');
           editBtn.textContent = 'Edit';
           editBtn.type = 'button';
+          editBtn.className = 'btn btn-secondary btn-sm';
           editBtn.addEventListener('click', () => {
             editingHabitId = habit.id;
             renderManageHabits();
@@ -304,11 +317,13 @@
           const deleteBtn = document.createElement('button');
           deleteBtn.textContent = 'Delete';
           deleteBtn.type = 'button';
+          deleteBtn.className = 'btn btn-danger btn-sm';
           deleteBtn.addEventListener('click', () => deleteHabit(habit.id));
 
-          li.appendChild(editBtn);
-          li.appendChild(document.createTextNode(' '));
-          li.appendChild(deleteBtn);
+          actionsDiv.appendChild(editBtn);
+          actionsDiv.appendChild(deleteBtn);
+          li.appendChild(textSpan);
+          li.appendChild(actionsDiv);
         }
 
         list.appendChild(li);
