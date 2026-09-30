@@ -1,10 +1,8 @@
 /* ==========================================================================
-   DailyQuest - Modern Minimalist Design System
-   Theme System: Dark Mode (Default) & Light Mode
+   DailyQuest - Modern Minimalist Design System (Dark Only)
    ========================================================================== */
 
-:root,
-[data-theme="dark"] {
+:root {
   /* Dark Mode Palette (Linear & Notion inspired) */
   --bg-page: #0d1117;
   --bg-card: #161b22;
@@ -37,32 +35,6 @@
   --radius-md: 10px;
   --radius-lg: 14px;
   --transition: all 0.15s ease-in-out;
-}
-
-[data-theme="light"] {
-  /* Light Mode Palette */
-  --bg-page: #f8fafc;
-  --bg-card: #ffffff;
-  --bg-card-hover: #f8fafc;
-  --bg-card-subtle: #f1f5f9;
-  --text-main: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
-  --border-light: #f1f5f9;
-  --border-hover: #cbd5e1;
-
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --primary-light: #eef2ff;
-  --success: #10b981;
-  --success-bg: #ecfdf5;
-  --danger: #ef4444;
-  --danger-hover: #dc2626;
-  --danger-light: #fef2f2;
-
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
 }
 
 /* Global Reset */
