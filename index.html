@@ -433,54 +433,8 @@
       }
     });
 
-    // --- File Storage & Sync Event Listeners ---
-    document.getElementById('btn-connect-dir').addEventListener('click', connectDirectory);
-    document.getElementById('btn-reload-files').addEventListener('click', reloadFromDisk);
-    document.getElementById('btn-export-txt').addEventListener('click', exportTxtFiles);
-
-    document.getElementById('btn-import-habits').addEventListener('click', () => {
-      document.getElementById('file-input-habits').click();
-    });
-
-    document.getElementById('file-input-habits').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const loaded = parseHabitsTxt(evt.target.result);
-        if (loaded.length > 0) {
-          habits = loaded;
-          saveData();
-          renderAll();
-          alert(`Successfully imported ${loaded.length} habits from ${file.name}!`);
-        } else {
-          alert('No valid habits found in selected file.');
-        }
-      };
-      reader.readAsText(file);
-      e.target.value = '';
-    });
-
-    document.getElementById('btn-import-progress').addEventListener('click', () => {
-      document.getElementById('file-input-progress').click();
-    });
-
-    document.getElementById('file-input-progress').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        logs = parseProgressTxt(evt.target.result);
-        saveData();
-        renderAll();
-        alert(`Successfully imported progress logs from ${file.name}!`);
-      };
-      reader.readAsText(file);
-      e.target.value = '';
-    });
-
-    // Initial render
-    renderAll();
+    // Initial load from local server (or cached fallback)
+    loadData();
   </script>
 </body>
 </html>
