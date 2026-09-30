@@ -23,19 +23,20 @@
     <!-- Section 1: Add New Habit -->
     <section class="card">
       <h2 class="card-title">1. Add a Habit</h2>
-      <form id="add-habit-form">
-        <label for="habit-name">Habit Name:</label>
-        <input type="text" id="habit-name" placeholder="e.g., Drink 2L Water, Read 10 pages" required>
-        <button type="submit">Add Habit</button>
+      <form id="add-habit-form" class="habit-form">
+        <input type="text" id="habit-name" class="form-input" placeholder="e.g., Drink 2L Water, Read 10 pages..." required>
+        <button type="submit" class="btn btn-primary">+ Add Habit</button>
       </form>
     </section>
 
     <!-- Section 2: Today's Routine Checklist -->
     <section class="card">
-      <h2 class="card-title">2. Today's Checklist</h2>
-      <div>
-        <strong>Today's Completion: </strong>
-        <span id="progress-text">0 / 0</span>
+      <div class="card-header">
+        <h2 class="card-title">2. Today's Checklist</h2>
+        <span id="progress-text" class="progress-badge">0 / 0 (0%)</span>
+      </div>
+
+      <div class="progress-container">
         <progress id="progress-bar" value="0" max="100"></progress>
       </div>
 
