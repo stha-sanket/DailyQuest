@@ -436,4 +436,122 @@ progress#progress-bar::-moz-progress-bar {
   color: var(--success);
 }
 
+/* Button Variants */
+.btn-secondary {
+  background-color: var(--bg-page);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--border-light);
+  color: var(--text-main);
+  border-color: #cbd5e1;
+}
+
+.btn-danger {
+  background-color: var(--danger-light);
+  color: var(--danger);
+  border: 1px solid transparent;
+}
+
+.btn-danger:hover {
+  background-color: var(--danger);
+  color: #ffffff;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
+}
+
+.form-input-sm {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+/* Section 4: Manage Habits List */
+.manage-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.manage-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+  transition: var(--transition);
+}
+
+.manage-item:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-sm);
+}
+
+.manage-item-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.manage-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.inline-edit-form {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.inline-edit-form .form-input-sm {
+  flex: 1;
+}
+
+/* Responsive Polish */
+@media (max-width: 640px) {
+  body {
+    padding: 1rem 0.75rem 3rem;
+  }
+
+  .card {
+    padding: 1.15rem;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .habit-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .habit-form .btn-primary {
+    width: 100%;
+  }
+
+  .inline-edit-form {
+    flex-wrap: wrap;
+  }
+
+  .inline-edit-form .form-input-sm {
+    width: 100%;
+    flex: auto;
+  }
+}
+
+
 
