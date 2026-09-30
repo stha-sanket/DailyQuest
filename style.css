@@ -139,3 +139,191 @@ body {
   color: var(--text-muted);
   margin-bottom: 1.25rem;
 }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.card-header .card-title {
+  margin-bottom: 0;
+}
+
+/* Form & Input Controls */
+.habit-form {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.form-input {
+  flex: 1;
+  font-family: inherit;
+  font-size: 0.925rem;
+  padding: 0.65rem 0.95rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: #ffffff;
+  color: var(--text-main);
+  outline: none;
+  transition: var(--transition);
+}
+
+.form-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+/* Button Styles */
+.btn {
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Progress Bar & Indicators */
+.progress-badge {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 0.825rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  letter-spacing: 0.01em;
+}
+
+.progress-container {
+  margin-bottom: 1.25rem;
+}
+
+progress#progress-bar {
+  display: block;
+  width: 100%;
+  height: 8px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  border-radius: 9999px;
+  overflow: hidden;
+  background-color: var(--border-light);
+}
+
+progress#progress-bar::-webkit-progress-bar {
+  background-color: var(--border-light);
+  border-radius: 9999px;
+}
+
+progress#progress-bar::-webkit-progress-value {
+  background: linear-gradient(90deg, var(--primary), #818cf8);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+progress#progress-bar::-moz-progress-bar {
+  background: linear-gradient(90deg, var(--primary), #818cf8);
+  border-radius: 9999px;
+}
+
+/* Today's Checklist */
+.checklist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.checklist-item:hover {
+  border-color: #cbd5e1;
+  background-color: #fcfcfd;
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.checklist-item.completed {
+  background-color: #f8fafc;
+  border-color: var(--border-light);
+}
+
+.checklist-item.completed .checklist-label {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.checklist-checkbox {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--primary);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.checklist-label {
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-main);
+  flex: 1;
+  user-select: none;
+  transition: var(--transition);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  background-color: var(--bg-page);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+}
+
