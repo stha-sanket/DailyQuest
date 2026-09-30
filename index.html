@@ -132,25 +132,32 @@
       container.innerHTML = '';
 
       if (habits.length === 0) {
-        container.innerHTML = '<p>No habits added yet. Use the form above to add your first habit!</p>';
+        container.innerHTML = '<div class="empty-state">No habits added yet. Use the form above to add your first habit!</div>';
         updateProgress();
         return;
       }
 
       const ul = document.createElement('ul');
+      ul.className = 'checklist';
       habits.forEach(habit => {
         const li = document.createElement('li');
+        li.className = 'checklist-item';
         const isDone = !!(logs[todayStr] && logs[todayStr][habit.id]);
+        if (isDone) {
+          li.classList.add('completed');
+        }
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
+        checkbox.className = 'checklist-checkbox';
         checkbox.id = `check-${habit.id}`;
         checkbox.checked = isDone;
         checkbox.addEventListener('change', () => toggleHabit(todayStr, habit.id, checkbox.checked));
 
         const label = document.createElement('label');
+        label.className = 'checklist-label';
         label.htmlFor = `check-${habit.id}`;
-        label.textContent = ` ${habit.name}`;
+        label.textContent = habit.name;
 
         li.appendChild(checkbox);
         li.appendChild(label);
