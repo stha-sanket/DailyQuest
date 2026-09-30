@@ -133,10 +133,196 @@
       logs[todayStr] = {};
     }
 
-    // Helper: save to localStorage
+    // Helper: save to localStorage & connected .txt files
     function saveData() {
       localStorage.setItem(STORAGE_KEY_HABITS, JSON.stringify(habits));
       localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(logs));
+      writeToDisk();
+    }
+
+    // --- Text File (.txt) Parsers & Serializers ---
+    function parseHabitsTxt(text) {
+      const lines = text.split(/\r?\n/);
+      const parsed = [];
+      lines.forEach((line, index) => {
+        line = line.trim();
+        if (!line || line.startsWith('#')) return;
+        if (line.includes('|')) {
+          const parts = line.split('|');
+          const id = parts[0].trim();
+          const name = parts.slice(1).join('|').trim();
+          if (name) {
+            parsed.push({ id: id || `h_${Date.now()}_${index}`, name });
+          }
+        } else {
+          parsed.push({ id: `h_${Date.now()}_${index}`, name: line });
+        }
+      });
+      return parsed;
+    }
+
+    function serializeHabitsTxt(habitsList) {
+      let content = '# DailyQuest Habits File\n# Format: ID | Habit Name\n# You can manually add, edit, or delete lines here.\n';
+      habitsList.forEach(h => {
+        content += `${h.id} | ${h.name}\n`;
+      });
+      return content;
+    }
+
+    function parseProgressTxt(text) {
+      const lines = text.split(/\r?\n/);
+      const parsedLogs = {};
+      lines.forEach(line => {
+        line = line.trim();
+        if (!line || line.startsWith('#')) return;
+        const parts = line.split('|');
+        if (parts.length >= 3) {
+          const dateStr = parts[0].trim();
+          const habitId = parts[1].trim();
+          const val = parts[2].trim();
+          const isDone = val === '1' || val.toLowerCase() === 'true';
+          if (!parsedLogs[dateStr]) parsedLogs[dateStr] = {};
+          parsedLogs[dateStr][habitId] = isDone;
+        }
+      });
+      return parsedLogs;
+    }
+
+    function serializeProgressTxt(logsObj) {
+      let content = '# DailyQuest Daily Progress Logs\n# Format: YYYY-MM-DD | Habit ID | 1 (completed) or 0 (not completed)\n';
+      const sortedDates = Object.keys(logsObj).sort().reverse();
+      sortedDates.forEach(dateStr => {
+        const habitMap = logsObj[dateStr] || {};
+        Object.keys(habitMap).forEach(hId => {
+          content += `${dateStr} | ${hId} | ${habitMap[hId] ? '1' : '0'}\n`;
+        });
+      });
+      return content;
+    }
+
+    // --- File System Access API & Disk Sync ---
+    let dirHandle = null;
+    let habitsFileHandle = null;
+    let progressFileHandle = null;
+
+    function updateSyncStatus(isConnected, folderName = '') {
+      const dot = document.getElementById('sync-dot');
+      const text = document.getElementById('sync-status-text');
+      const reloadBtn = document.getElementById('btn-reload-files');
+      const connectBtn = document.getElementById('btn-connect-dir');
+      if (isConnected) {
+        dot.classList.add('connected');
+        text.textContent = `Connected to "${folderName}" (habits.txt & progress.txt active)`;
+        reloadBtn.style.display = 'inline-flex';
+        connectBtn.textContent = '📂 Change Folder';
+      } else {
+        dot.classList.remove('connected');
+        text.textContent = 'Not connected to local folder';
+        reloadBtn.style.display = 'none';
+        connectBtn.textContent = '📂 Connect Local Folder';
+      }
+    }
+
+    async function connectDirectory() {
+      if (!('showDirectoryPicker' in window)) {
+        alert('Your browser does not support direct folder access. You can still use the Export .txt and Import buttons anytime!');
+        return;
+      }
+      try {
+        dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+
+        // Open or auto-create habits.txt
+        habitsFileHandle = await dirHandle.getFileHandle('habits.txt', { create: true });
+        const habitsFile = await habitsFileHandle.getFile();
+        let habitsText = await habitsFile.text();
+        if (!habitsText.trim()) {
+          const writable = await habitsFileHandle.createWritable();
+          await writable.write(serializeHabitsTxt(habits));
+          await writable.close();
+        } else {
+          const loaded = parseHabitsTxt(habitsText);
+          if (loaded.length > 0) habits = loaded;
+        }
+
+        // Open or auto-create progress.txt
+        progressFileHandle = await dirHandle.getFileHandle('progress.txt', { create: true });
+        const progressFile = await progressFileHandle.getFile();
+        let progressText = await progressFile.text();
+        if (!progressText.trim()) {
+          const writable = await progressFileHandle.createWritable();
+          await writable.write(serializeProgressTxt(logs));
+          await writable.close();
+        } else {
+          logs = parseProgressTxt(progressText);
+        }
+
+        updateSyncStatus(true, dirHandle.name);
+        saveData();
+        renderAll();
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('File sync error:', err);
+          alert('Could not access folder: ' + err.message);
+        }
+      }
+    }
+
+    async function writeToDisk() {
+      if (!dirHandle) return;
+      try {
+        if (habitsFileHandle) {
+          const writable = await habitsFileHandle.createWritable();
+          await writable.write(serializeHabitsTxt(habits));
+          await writable.close();
+        }
+        if (progressFileHandle) {
+          const writable = await progressFileHandle.createWritable();
+          await writable.write(serializeProgressTxt(logs));
+          await writable.close();
+        }
+      } catch (err) {
+        console.warn('Could not write to disk files:', err);
+      }
+    }
+
+    async function reloadFromDisk() {
+      if (!dirHandle) return;
+      try {
+        if (habitsFileHandle) {
+          const hFile = await habitsFileHandle.getFile();
+          const loaded = parseHabitsTxt(await hFile.text());
+          if (loaded.length > 0) habits = loaded;
+        }
+        if (progressFileHandle) {
+          const pFile = await progressFileHandle.getFile();
+          logs = parseProgressTxt(await pFile.text());
+        }
+        saveData();
+        renderAll();
+        alert('Successfully reloaded habits.txt and progress.txt from disk!');
+      } catch (err) {
+        alert('Could not reload from disk: ' + err.message);
+      }
+    }
+
+    // --- Export / Import Fallbacks ---
+    function downloadFile(filename, content) {
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function exportTxtFiles() {
+      downloadFile('habits.txt', serializeHabitsTxt(habits));
+      setTimeout(() => {
+        downloadFile('progress.txt', serializeProgressTxt(logs));
+      }, 300);
     }
 
     // Helper: calculate progress for a date
