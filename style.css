@@ -327,3 +327,113 @@ progress#progress-bar::-moz-progress-bar {
   border-radius: var(--radius-md);
 }
 
+/* Notion-Style Database Grid Table */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+  box-shadow: var(--shadow-sm);
+  -webkit-overflow-scrolling: touch;
+}
+
+.notion-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.notion-table th {
+  background-color: var(--bg-page);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.notion-table th:last-child {
+  border-right: none;
+}
+
+.notion-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  color: var(--text-main);
+  vertical-align: middle;
+  transition: var(--transition);
+}
+
+.notion-table td:last-child {
+  border-right: none;
+}
+
+.notion-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.notion-table tbody tr:hover td {
+  background-color: #f8fafc;
+}
+
+.date-cell {
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.date-today-badge {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+}
+
+.grid-check-cell {
+  text-align: center;
+}
+
+.grid-check-cell input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--primary);
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.grid-progress-cell {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.grid-progress-pill {
+  display: inline-block;
+  font-size: 0.775rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  background-color: var(--border-light);
+  color: var(--text-secondary);
+}
+
+.grid-progress-pill.complete {
+  background-color: #ecfdf5;
+  color: var(--success);
+}
+
+

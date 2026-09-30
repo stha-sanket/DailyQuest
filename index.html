@@ -49,18 +49,20 @@
     <section class="card">
       <h2 class="card-title">3. Habit Database (Notion-Style Table View)</h2>
       <p class="card-subtitle">Columns represent your habits; rows represent dates.</p>
-      <table border="1" id="habits-table">
-        <thead>
-          <tr id="table-header-row">
-            <th>Date</th>
-            <!-- Habit headers will be inserted here dynamically -->
-            <th>Daily Progress</th>
-          </tr>
-        </thead>
-        <tbody id="table-body">
-          <!-- Date rows with checkboxes will be inserted here dynamically -->
-        </tbody>
-      </table>
+      <div class="table-container">
+        <table class="notion-table" id="habits-table">
+          <thead>
+            <tr id="table-header-row">
+              <th>Date</th>
+              <!-- Habit headers will be inserted here dynamically -->
+              <th>Daily Progress</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Date rows with checkboxes will be inserted here dynamically -->
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <!-- Section 4: Manage Habits List -->
