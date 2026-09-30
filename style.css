@@ -1,41 +1,68 @@
 /* ==========================================================================
    DailyQuest - Modern Minimalist Design System
-   Step 1: Variables, Reset, Layout, Header & Cards
+   Theme System: Dark Mode (Default) & Light Mode
    ========================================================================== */
 
-:root {
-  /* Colors */
+:root,
+[data-theme="dark"] {
+  /* Dark Mode Palette (Linear & Notion inspired) */
+  --bg-page: #0d1117;
+  --bg-card: #161b22;
+  --bg-card-hover: #1f242c;
+  --bg-card-subtle: #12161d;
+  --text-main: #f0f6fc;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --border-color: #30363d;
+  --border-light: #21262d;
+  --border-hover: #484f58;
+
+  /* Accent & Status */
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-light: rgba(99, 102, 241, 0.16);
+  --success: #34d399;
+  --success-bg: rgba(52, 211, 153, 0.14);
+  --danger: #f87171;
+  --danger-hover: #ef4444;
+  --danger-light: rgba(248, 113, 113, 0.14);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+
+  /* Typography & Misc */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --transition: all 0.15s ease-in-out;
+}
+
+[data-theme="light"] {
+  /* Light Mode Palette */
   --bg-page: #f8fafc;
   --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --bg-card-subtle: #f1f5f9;
   --text-main: #0f172a;
   --text-secondary: #475569;
   --text-muted: #64748b;
   --border-color: #e2e8f0;
   --border-light: #f1f5f9;
+  --border-hover: #cbd5e1;
 
-  /* Accent & Status */
   --primary: #4f46e5;
   --primary-hover: #4338ca;
   --primary-light: #eef2ff;
   --success: #10b981;
+  --success-bg: #ecfdf5;
   --danger: #ef4444;
   --danger-hover: #dc2626;
   --danger-light: #fef2f2;
 
-  /* Typography */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-
-  /* Spacing & Radii */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-
-  /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
-
-  /* Transitions */
-  --transition: all 0.15s ease-in-out;
 }
 
 /* Global Reset */
@@ -52,6 +79,7 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   padding: 2rem 1rem 4rem;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* Main Container */
@@ -106,6 +134,12 @@ body {
   color: var(--text-muted);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .date-badge {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -117,6 +151,27 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
+.theme-toggle-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.45rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.theme-toggle-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+}
+
 /* Cards */
 .card {
   background: var(--bg-card);
@@ -124,6 +179,7 @@ body {
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .card-title {
@@ -168,7 +224,7 @@ body {
   padding: 0.65rem 0.95rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  background-color: #ffffff;
+  background-color: var(--bg-card-subtle);
   color: var(--text-main);
   outline: none;
   transition: var(--transition);
@@ -176,7 +232,7 @@ body {
 
 .form-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
 .form-input::placeholder {
@@ -216,6 +272,40 @@ body {
 
 .btn-primary:active {
   transform: translateY(0);
+}
+
+.btn-secondary {
+  background-color: var(--bg-card-subtle);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-card-hover);
+  color: var(--text-main);
+  border-color: var(--border-hover);
+}
+
+.btn-danger {
+  background-color: var(--danger-light);
+  color: var(--danger);
+  border: 1px solid transparent;
+}
+
+.btn-danger:hover {
+  background-color: var(--danger);
+  color: #ffffff;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
+}
+
+.form-input-sm {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
 }
 
 /* Progress Bar & Indicators */
@@ -276,20 +366,20 @@ progress#progress-bar::-moz-progress-bar {
   padding: 0.85rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  background: #ffffff;
+  background: var(--bg-card);
   transition: var(--transition);
   cursor: pointer;
 }
 
 .checklist-item:hover {
-  border-color: #cbd5e1;
-  background-color: #fcfcfd;
+  border-color: var(--border-hover);
+  background-color: var(--bg-card-hover);
   box-shadow: var(--shadow-sm);
   transform: translateY(-1px);
 }
 
 .checklist-item.completed {
-  background-color: #f8fafc;
+  background-color: var(--bg-card-subtle);
   border-color: var(--border-light);
 }
 
@@ -322,7 +412,7 @@ progress#progress-bar::-moz-progress-bar {
   padding: 2rem 1rem;
   color: var(--text-muted);
   font-size: 0.9rem;
-  background-color: var(--bg-page);
+  background-color: var(--bg-card-subtle);
   border: 1px dashed var(--border-color);
   border-radius: var(--radius-md);
 }
@@ -333,7 +423,7 @@ progress#progress-bar::-moz-progress-bar {
   overflow-x: auto;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   box-shadow: var(--shadow-sm);
   -webkit-overflow-scrolling: touch;
 }
@@ -347,7 +437,7 @@ progress#progress-bar::-moz-progress-bar {
 }
 
 .notion-table th {
-  background-color: var(--bg-page);
+  background-color: var(--bg-card-subtle);
   color: var(--text-muted);
   font-weight: 600;
   font-size: 0.75rem;
@@ -381,7 +471,7 @@ progress#progress-bar::-moz-progress-bar {
 }
 
 .notion-table tbody tr:hover td {
-  background-color: #f8fafc;
+  background-color: var(--bg-card-hover);
 }
 
 .date-cell {
@@ -427,48 +517,15 @@ progress#progress-bar::-moz-progress-bar {
   font-weight: 600;
   padding: 0.2rem 0.6rem;
   border-radius: 9999px;
-  background-color: var(--border-light);
+  background-color: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
   color: var(--text-secondary);
 }
 
 .grid-progress-pill.complete {
-  background-color: #ecfdf5;
+  background-color: var(--success-bg);
   color: var(--success);
-}
-
-/* Button Variants */
-.btn-secondary {
-  background-color: var(--bg-page);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-  background-color: var(--border-light);
-  color: var(--text-main);
-  border-color: #cbd5e1;
-}
-
-.btn-danger {
-  background-color: var(--danger-light);
-  color: var(--danger);
-  border: 1px solid transparent;
-}
-
-.btn-danger:hover {
-  background-color: var(--danger);
-  color: #ffffff;
-}
-
-.btn-sm {
-  padding: 0.35rem 0.65rem;
-  font-size: 0.8rem;
-  border-radius: var(--radius-sm);
-}
-
-.form-input-sm {
-  padding: 0.4rem 0.75rem;
-  font-size: 0.85rem;
+  border-color: transparent;
 }
 
 /* Section 4: Manage Habits List */
@@ -486,12 +543,12 @@ progress#progress-bar::-moz-progress-bar {
   padding: 0.75rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   transition: var(--transition);
 }
 
 .manage-item:hover {
-  border-color: #cbd5e1;
+  border-color: var(--border-hover);
   box-shadow: var(--shadow-sm);
 }
 
@@ -534,6 +591,11 @@ progress#progress-bar::-moz-progress-bar {
     gap: 0.75rem;
   }
 
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .habit-form {
     flex-direction: column;
     align-items: stretch;
@@ -552,6 +614,3 @@ progress#progress-bar::-moz-progress-bar {
     flex: auto;
   }
 }
-
-
-
