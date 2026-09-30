@@ -182,13 +182,15 @@
       const tbody = document.getElementById('table-body');
 
       // Clear existing dynamic columns
-      theadRow.innerHTML = '<th>Date</th>';
+      theadRow.innerHTML = '<th style="min-width: 140px;">Date</th>';
       habits.forEach(h => {
         const th = document.createElement('th');
+        th.style.textAlign = 'center';
         th.textContent = h.name;
         theadRow.appendChild(th);
       });
       const progressTh = document.createElement('th');
+      progressTh.style.textAlign = 'center';
       progressTh.textContent = 'Daily Progress';
       theadRow.appendChild(progressTh);
 
@@ -209,13 +211,17 @@
 
         // Date Cell
         const dateTd = document.createElement('td');
-        dateTd.textContent = dateStr === todayStr ? `${dateStr} (Today)` : dateStr;
+        if (dateStr === todayStr) {
+          dateTd.innerHTML = `<span class="date-cell">${dateStr} <span class="date-today-badge">Today</span></span>`;
+        } else {
+          dateTd.innerHTML = `<span class="date-cell">${dateStr}</span>`;
+        }
         tr.appendChild(dateTd);
 
         // Habit Checkboxes
         habits.forEach(h => {
           const td = document.createElement('td');
-          td.align = 'center';
+          td.className = 'grid-check-cell';
           const checkbox = document.createElement('input');
           checkbox.type = 'checkbox';
           checkbox.checked = !!(logs[dateStr] && logs[dateStr][h.id]);
@@ -226,8 +232,10 @@
 
         // Progress Cell
         const progTd = document.createElement('td');
+        progTd.className = 'grid-progress-cell';
         const prog = getProgressForDate(dateStr);
-        progTd.textContent = `${prog.completed}/${prog.total} (${prog.percentage}%)`;
+        const isComplete = prog.total > 0 && prog.completed === prog.total;
+        progTd.innerHTML = `<span class="grid-progress-pill ${isComplete ? 'complete' : ''}">${prog.completed}/${prog.total} (${prog.percentage}%)</span>`;
         tr.appendChild(progTd);
 
         tbody.appendChild(tr);
