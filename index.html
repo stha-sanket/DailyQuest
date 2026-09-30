@@ -244,6 +244,8 @@
       });
     }
 
+    let editingHabitId = null;
+
     function renderManageHabits() {
       const list = document.getElementById('manage-habits-list');
       list.innerHTML = '';
@@ -255,13 +257,73 @@
 
       habits.forEach(habit => {
         const li = document.createElement('li');
-        li.textContent = `${habit.name} [${habit.routine}] `;
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.addEventListener('click', () => deleteHabit(habit.id));
+        if (editingHabitId === habit.id) {
+          // Inline edit form
+          const nameInput = document.createElement('input');
+          nameInput.type = 'text';
+          nameInput.value = habit.name;
 
-        li.appendChild(deleteBtn);
+          const routineSelect = document.createElement('select');
+          ['Morning', 'Afternoon', 'Evening', 'Anytime'].forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt;
+            option.textContent = opt;
+            if (habit.routine === opt) option.selected = true;
+            routineSelect.appendChild(option);
+          });
+
+          const saveBtn = document.createElement('button');
+          saveBtn.textContent = 'Save';
+          saveBtn.type = 'button';
+          saveBtn.addEventListener('click', () => {
+            const newName = nameInput.value.trim();
+            if (!newName) {
+              alert('Habit name cannot be empty');
+              return;
+            }
+            updateHabit(habit.id, newName, routineSelect.value);
+          });
+
+          const cancelBtn = document.createElement('button');
+          cancelBtn.textContent = 'Cancel';
+          cancelBtn.type = 'button';
+          cancelBtn.addEventListener('click', () => {
+            editingHabitId = null;
+            renderManageHabits();
+          });
+
+          li.appendChild(document.createTextNode('Edit: '));
+          li.appendChild(nameInput);
+          li.appendChild(document.createTextNode(' '));
+          li.appendChild(routineSelect);
+          li.appendChild(document.createTextNode(' '));
+          li.appendChild(saveBtn);
+          li.appendChild(document.createTextNode(' '));
+          li.appendChild(cancelBtn);
+        } else {
+          const textSpan = document.createElement('span');
+          textSpan.textContent = `${habit.name} [${habit.routine}] `;
+          li.appendChild(textSpan);
+
+          const editBtn = document.createElement('button');
+          editBtn.textContent = 'Edit';
+          editBtn.type = 'button';
+          editBtn.addEventListener('click', () => {
+            editingHabitId = habit.id;
+            renderManageHabits();
+          });
+
+          const deleteBtn = document.createElement('button');
+          deleteBtn.textContent = 'Delete';
+          deleteBtn.type = 'button';
+          deleteBtn.addEventListener('click', () => deleteHabit(habit.id));
+
+          li.appendChild(editBtn);
+          li.appendChild(document.createTextNode(' '));
+          li.appendChild(deleteBtn);
+        }
+
         list.appendChild(li);
       });
     }
