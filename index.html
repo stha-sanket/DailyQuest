@@ -349,9 +349,23 @@
       renderAll();
     }
 
+    function updateHabit(habitId, newName, newRoutine) {
+      const habit = habits.find(h => h.id === habitId);
+      if (habit) {
+        habit.name = newName;
+        habit.routine = newRoutine;
+        saveData();
+      }
+      editingHabitId = null;
+      renderAll();
+    }
+
     function deleteHabit(habitId) {
       if (!confirm('Are you sure you want to delete this routine item?')) return;
       habits = habits.filter(h => h.id !== habitId);
+      if (editingHabitId === habitId) {
+        editingHabitId = null;
+      }
       // Clean up habit logs
       Object.keys(logs).forEach(date => {
         if (logs[date][habitId] !== undefined) {
