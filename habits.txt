@@ -1,0 +1,7 @@
+# DailyQuest Habits File
+# Format: ID | Habit Name
+# You can manually add, edit, or delete lines here.
+# New habits can be added as: h_<id> | Habit Name (or simply the Habit Name on a new line).
+h1 | Drink 2L Water
+h2 | Read 15 Mins
+h3 | Workout / Walk
