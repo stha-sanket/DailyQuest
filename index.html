@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DailyQuest - Simple Habit Tracker</title>
+</head>
+<body>
+
+  <header>
+    <p id="today-date"></p>
+  </header>
+
+  <hr>
+
+  <!-- Section 1: Add New Habit / Routine Item -->
+  <section>
+    <h2>1. Add a Routine Item / Habit</h2>
+    <form id="add-habit-form">
+      <label for="habit-name">Habit Name:</label>
+      <input type="text" id="habit-name" placeholder="e.g., Morning Workout, Read 10 pages" required>
+
+      <label for="habit-routine">Time of Day / Routine:</label>
+      <select id="habit-routine">
+        <option value="Morning">Morning</option>
+        <option value="Afternoon">Afternoon</option>
+        <option value="Evening">Evening</option>
+        <option value="Anytime">Anytime</option>
+      </select>
+
+      <button type="submit">Add Habit</button>
+    </form>
+  </section>
+
+  <hr>
+
+  <!-- Section 2: Today's Routine Checklist -->
+  <section>
+    <h2>2. Today's Checklist</h2>
+    <div>
+      <strong>Today's Completion: </strong>
+      <span id="progress-text">0 / 0</span>
+      <progress id="progress-bar" value="0" max="100"></progress>
+    </div>
+
+    <div id="today-checklist-container">
+      <!-- Generated checklist items will be inserted here -->
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- Section 3: Notion-Style Weekly / Daily Grid Table -->
+  <section>
+    <h2>3. Habit Database (Notion-Style Table View)</h2>
+    <p>Columns represent your habits; rows represent dates.</p>
+    <table border="1" id="habits-table">
+      <thead>
+        <tr id="table-header-row">
+          <th>Date</th>
+          <!-- Habit headers will be inserted here dynamically -->
+          <th>Daily Progress</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <!-- Date rows with checkboxes will be inserted here dynamically -->
+      </tbody>
+    </table>
+  </section>
+
+  <hr>
+
+  <!-- Section 4: Manage Habits List -->
+  <section>
+    <h2>4. Manage Habits</h2>
+    <ul id="manage-habits-list">
+      <!-- List of existing habits with delete buttons -->
+    </ul>
+  </section>
+
+  <script>
+    // --- Data Storage Keys ---
+    const STORAGE_KEY_HABITS = 'dailyquest_habits';
+    const STORAGE_KEY_LOGS = 'dailyquest_logs'; // format: { 'YYYY-MM-DD': { habitId: true/false } }
+
+    // --- State Initialization ---
+    // Default initial habits if none exist
+    let habits = JSON.parse(localStorage.getItem(STORAGE_KEY_HABITS)) || [
+      { id: 'h1', name: 'Drink 2L Water', routine: 'Morning' },
+      { id: 'h2', name: 'Read 15 Mins', routine: 'Evening' },
+      { id: 'h3', name: 'Workout / Walk', routine: 'Afternoon' }
+    ];
+
+    let logs = JSON.parse(localStorage.getItem(STORAGE_KEY_LOGS)) || {};
+
+    // Helper: format Date to YYYY-MM-DD
+    function getTodayString() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    const todayStr = getTodayString();
+    if (!logs[todayStr]) {
+      logs[todayStr] = {};
+    }
+
+    // Helper: save to localStorage
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY_HABITS, JSON.stringify(habits));
+      localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(logs));
+    }
+
+    // Helper: calculate progress for a date
+    function getProgressForDate(dateStr) {
+      if (habits.length === 0) return { completed: 0, total: 0, percentage: 0 };
+      const dateLog = logs[dateStr] || {};
+      let completed = 0;
+      habits.forEach(h => {
+        if (dateLog[h.id]) completed++;
+      });
+      const percentage = Math.round((completed / habits.length) * 100);
+      return { completed, total: habits.length, percentage };
+    }
+
+    // --- Render Functions ---
+
+    function renderDateHeader() {
+      const dateDisplay = document.getElementById('today-date');
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      dateDisplay.textContent = `Today: ${new Date().toLocaleDateString(undefined, options)} (${todayStr})`;
+    }
+
+    function renderTodayChecklist() {
+      const container = document.getElementById('today-checklist-container');
+      container.innerHTML = '';
+
+      if (habits.length === 0) {
+        container.innerHTML = '<p>No habits added yet. Use the form above to add your first routine item!</p>';
+        updateProgress();
+        return;
+      }
+
+      // Group habits by routine
+      const grouped = {};
+      habits.forEach(h => {
+        const routine = h.routine || 'Anytime';
+        if (!grouped[routine]) grouped[routine] = [];
+        grouped[routine].push(h);
+      });
+
+      for (const [routineName, routineHabits] of Object.entries(grouped)) {
+        const groupTitle = document.createElement('h3');
+        groupTitle.textContent = routineName;
+        container.appendChild(groupTitle);
+
+        const ul = document.createElement('ul');
+        routineHabits.forEach(habit => {
+          const li = document.createElement('li');
+          const isDone = !!(logs[todayStr] && logs[todayStr][habit.id]);
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.id = `check-${habit.id}`;
+          checkbox.checked = isDone;
+          checkbox.addEventListener('change', () => toggleHabit(todayStr, habit.id, checkbox.checked));
+
+          const label = document.createElement('label');
+          label.htmlFor = `check-${habit.id}`;
+          label.textContent = ` ${habit.name}`;
+
+          li.appendChild(checkbox);
+          li.appendChild(label);
+          ul.appendChild(li);
+        });
+        container.appendChild(ul);
+      }
+
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const { completed, total, percentage } = getProgressForDate(todayStr);
+      document.getElementById('progress-text').textContent = `${completed} / ${total} (${percentage}%)`;
+      const progressBar = document.getElementById('progress-bar');
+      progressBar.value = percentage;
+    }
+
+    function renderTable() {
+      const theadRow = document.getElementById('table-header-row');
+      const tbody = document.getElementById('table-body');
+
+      // Clear existing dynamic columns
+      theadRow.innerHTML = '<th>Date</th>';
+      habits.forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = `${h.name} (${h.routine})`;
+        theadRow.appendChild(th);
+      });
+      const progressTh = document.createElement('th');
+      progressTh.textContent = 'Daily Progress';
+      theadRow.appendChild(progressTh);
+
+      // Render rows for the last 5 days up to today
+      tbody.innerHTML = '';
+      const datesToDisplay = [];
+      for (let i = 0; i < 5; i++) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        datesToDisplay.push(`${y}-${m}-${day}`);
+      }
+
+      datesToDisplay.forEach(dateStr => {
+        const tr = document.createElement('tr');
+
+        // Date Cell
+        const dateTd = document.createElement('td');
+        dateTd.textContent = dateStr === todayStr ? `${dateStr} (Today)` : dateStr;
+        tr.appendChild(dateTd);
+
+        // Habit Checkboxes
+        habits.forEach(h => {
+          const td = document.createElement('td');
+          td.align = 'center';
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.checked = !!(logs[dateStr] && logs[dateStr][h.id]);
+          checkbox.addEventListener('change', () => toggleHabit(dateStr, h.id, checkbox.checked));
+          td.appendChild(checkbox);
+          tr.appendChild(td);
+        });
+
+        // Progress Cell
+        const progTd = document.createElement('td');
+        const prog = getProgressForDate(dateStr);
+        progTd.textContent = `${prog.completed}/${prog.total} (${prog.percentage}%)`;
+        tr.appendChild(progTd);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderManageHabits() {
+      const list = document.getElementById('manage-habits-list');
+      list.innerHTML = '';
+
+      if (habits.length === 0) {
+        list.innerHTML = '<li>No habits available to manage.</li>';
+        return;
+      }
+
+      habits.forEach(habit => {
+        const li = document.createElement('li');
+        li.textContent = `${habit.name} [${habit.routine}] `;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => deleteHabit(habit.id));
+
+        li.appendChild(deleteBtn);
+        list.appendChild(li);
+      });
+    }
+
+    // --- Action Handlers ---
+
+    function toggleHabit(dateStr, habitId, isChecked) {
+      if (!logs[dateStr]) logs[dateStr] = {};
+      logs[dateStr][habitId] = isChecked;
+      saveData();
+      renderTodayChecklist();
+      renderTable();
+    }
+
+    function addHabit(name, routine) {
+      const newHabit = {
+        id: 'h_' + Date.now(),
+        name: name.trim(),
+        routine: routine
+      };
+      habits.push(newHabit);
+      saveData();
+      renderAll();
+    }
+
+    function deleteHabit(habitId) {
+      if (!confirm('Are you sure you want to delete this routine item?')) return;
+      habits = habits.filter(h => h.id !== habitId);
+      // Clean up habit logs
+      Object.keys(logs).forEach(date => {
+        if (logs[date][habitId] !== undefined) {
+          delete logs[date][habitId];
+        }
+      });
+      saveData();
+      renderAll();
+    }
+
+    function renderAll() {
+      renderDateHeader();
+      renderTodayChecklist();
+      renderTable();
+      renderManageHabits();
+    }
+
+    // --- Event Listeners ---
+    document.getElementById('add-habit-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const input = document.getElementById('habit-name');
+      const routineSelect = document.getElementById('habit-routine');
+      if (input.value.trim()) {
+        addHabit(input.value, routineSelect.value);
+        input.value = '';
+      }
+    });
+
+    // Initial render
+    renderAll();
+  </script>
+</body>
+</html>
